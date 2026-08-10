@@ -56,6 +56,8 @@ A production-ready REST API for product inventory management, built as a portfol
 
 Swagger UI: http://localhost:8080/swagger-ui.html
 
+**Live demo**: https://api-inventory.darknezz.dev/swagger-ui.html
+
 Seeded credentials (dev profile):
 
 | Username | Password | Role |
@@ -120,7 +122,7 @@ src/main/java/com/darkhub/api/inventory/
 |---|---|
 | Build | `package`, uploads jar as artifact |
 | Test | `verify` + JaCoCo coverage gate (≥90% lines, ≥70% branches), coverage report artifact |
-| Deploy | Downloads jar, SSH to Oracle Cloud VM (pipeline stage ready, VM provisioning in progress) |
+| Deploy | SSH to Oracle Cloud VM: git pull + docker compose up -d --build (auto-deploy on every push to main) |
 
 **Quality (`code-quality.yml`)**: SonarCloud scan on every push/PR.
 
@@ -151,7 +153,7 @@ Coverage enforced by JaCoCo: **≥90% lines, ≥70% branches**. Current: **98% l
 
 ## 📚 Related
 
-- [Playwright test automation demo](https://github.com/YamiDarknezz/playwright-test-automation-demo) — 18 API + UI E2E tests covering this API, CI green, live HTML report
+- [Playwright test automation demo](https://github.com/YamiDarknezz/playwright-test-automation-demo) — 26 API + UI E2E tests covering this API, CI green, live HTML report
 - [GitHub profile](https://github.com/YamiDarknezz)
 
 ---
