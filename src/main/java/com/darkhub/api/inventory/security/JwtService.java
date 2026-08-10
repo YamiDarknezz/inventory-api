@@ -21,6 +21,13 @@ public class JwtService {
     public JwtService(
             @Value("${app.jwt.secret}") String secret,
             @Value("${app.jwt.expiration-ms}") long expirationMs) {
+        if (secret == null || secret.isBlank()
+                || secret.contains("change-me")
+                || secret.length() < 32) {
+            throw new IllegalStateException(
+                    "app.jwt.secret is missing, still the default, or shorter than 32 characters. "
+                            + "Set a strong JWT_SECRET before starting the application.");
+        }
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expirationMs = expirationMs;
     }
