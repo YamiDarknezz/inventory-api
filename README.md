@@ -1,24 +1,54 @@
+<div align="center">
+
 # Inventory API
 
+**REST inventory API with JWT authentication, role-based access control and full input validation**
+
+[![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)](https://adoptium.net)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5.3-6DB33F?logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Maven](https://img.shields.io/badge/Maven-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org)
+[![TypeScript](https://img.shields.io/badge/Playwright_Tests-18_tests-2EAD33?logo=playwright&logoColor=white)](https://github.com/YamiDarknezz/playwright-test-automation-demo)
+
 [![CI](https://github.com/YamiDarknezz/inventory-api/actions/workflows/ci.yml/badge.svg)](https://github.com/YamiDarknezz/inventory-api/actions/workflows/ci.yml)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/quality_gate?project=YamiDarknezz_inventory-api)](https://sonarcloud.io/summary/new_code?id=YamiDarknezz_inventory-api)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=YamiDarknezz_inventory-api&metric=coverage)](https://sonarcloud.io/summary/new_code?id=YamiDarknezz_inventory-api)
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=YamiDarknezz_inventory-api&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=YamiDarknezz_inventory-api)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=YamiDarknezz_inventory-api&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=YamiDarknezz_inventory-api)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=YamiDarknezz_inventory-api&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=YamiDarknezz_inventory-api)
+[![Duplicated Lines](https://sonarcloud.io/api/project_badges/measure?project=YamiDarknezz_inventory-api&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=YamiDarknezz_inventory-api)
 
-REST API for product inventory management with **JWT authentication**, **role-based access control** and **full input validation**. Built with Java 21 + Spring Boot 3.5.
+</div>
 
-This API is the system under test for the [Playwright test automation demo](https://github.com/YamiDarknezz/playwright-test-automation-demo).
+---
 
-## Features
+## 📋 About
 
-- JWT authentication (`/api/auth/register`, `/api/auth/login`)
-- Roles: `ADMIN` (write access) and `USER` (read-only)
-- Products: CRUD, pagination and search by name
-- Consistent error responses: `400` validation, `401` unauthenticated, `403` forbidden, `404` not found, `409` conflict
-- OpenAPI/Swagger UI with Bearer auth scheme
-- H2 in-memory database for dev, PostgreSQL ready via `prod` profile
-- 33 automated tests covering auth, CRUD and RBAC with **98% line / 78% branch coverage** (JaCoCo quality gate: ≥90% lines enforced in CI)
+A production-ready REST API for product inventory management, built as a portfolio showcase of backend engineering and test automation. It is the **system under test** for the [Playwright test automation demo](https://github.com/YamiDarknezz/playwright-test-automation-demo).
 
-## Quick start (dev)
+## ✨ Features
+
+| | |
+|---|---|
+| 🔐 **JWT authentication** | `register` / `login` with BCrypt-hashed passwords |
+| 🛡️ **RBAC** | `ADMIN` (write access) vs `USER` (read-only) |
+| 📦 **Products CRUD** | Pagination, search by name, full validation |
+| 🧾 **Consistent errors** | `400` / `401` / `403` / `404` / `409` in a uniform envelope |
+| 📖 **OpenAPI/Swagger** | Interactive docs with Bearer auth scheme |
+| 🗄️ **Databases** | H2 in-memory (dev) · PostgreSQL via `prod` profile (Neon-ready) |
+| ✅ **Quality gates** | JaCoCo ≥90% lines / ≥70% branches enforced in CI · SonarCloud scan |
+| 🧪 **33 tests** | Auth, CRUD, RBAC, validation, error handling |
+
+## 📊 Quality
+
+| Metric | Value |
+|---|---|
+| Quality Gate (SonarCloud) | **PASS** ✅ |
+| Coverage | **96.3%** |
+| Vulnerabilities / Bugs / Hotspots | **0 / 0 / 0** |
+| Security & Reliability rating | **A / A** |
+| Duplicated lines | **0%** |
+| Code smells | 1 (INFO: jjwt API requires `java.util.Date`, `java.time` used internally) |
+
+## 🚀 Quick start (dev)
 
 ```bash
 ./mvnw spring-boot:run
@@ -28,12 +58,12 @@ Swagger UI: http://localhost:8080/swagger-ui.html
 
 Seeded credentials (dev profile):
 
-| Username | Password | Role   |
-|----------|----------|--------|
-| `admin`  | `admin123` | ADMIN |
-| `demo`   | `demo1234` | USER  |
+| Username | Password | Role |
+|----------|----------|------|
+| `admin` | `admin123` | ADMIN |
+| `demo` | `demo1234` | USER |
 
-## Example flow
+## 🔑 Example flow
 
 ```bash
 # 1. Login as admin
@@ -52,7 +82,7 @@ curl http://localhost:8080/api/products \
   -H "Authorization: Bearer <TOKEN>"
 ```
 
-## Endpoints
+## 🗺️ Endpoints
 
 | Method | Path | Access | Description |
 |--------|------|--------|-------------|
@@ -68,15 +98,39 @@ curl http://localhost:8080/api/products \
 | GET | `/api/users/{id}` | ADMIN | Get user |
 | GET | `/actuator/health` | Public | Health check |
 
-## Production
+## 🏗️ Architecture
 
-Set profile `prod` and the env vars below (see `.env.example`):
+```
+src/main/java/com/darkhub/api/inventory/
+├── config/       # Security (JWT filter, BCrypt), OpenAPI, dev data seeding
+├── controller/   # Auth, Product, User controllers
+├── dto/          # Request/response records with Bean Validation
+├── exception/    # GlobalExceptionHandler: 400/401/403/404/409
+├── model/        # User, Product, Role
+├── repository/   # Spring Data JPA
+├── security/     # JwtService, JwtAuthFilter
+└── service/      # Business logic (auth, products, users)
+```
+
+## 🔧 CI/CD
+
+**Pipeline (`ci.yml`)**: `Build` → `Test` → `Deploy` (main only)
+
+| Job | What it does |
+|---|---|
+| Build | `package`, uploads jar as artifact |
+| Test | `verify` + JaCoCo coverage gate (≥90% lines, ≥70% branches), coverage report artifact |
+| Deploy | Downloads jar, SSH to Oracle Cloud VM (pipeline stage ready, VM provisioning in progress) |
+
+**Quality (`code-quality.yml`)**: SonarCloud scan on every push/PR.
+
+## 🗄️ Production (Neon PostgreSQL)
+
+Set profile `prod` and env vars (see `.env.example`):
 
 ```bash
 SPRING_PROFILES_ACTIVE=prod
-DB_HOST=...
-DB_PORT=5432
-DB_NAME=inventory
+DB_URL=postgresql://user:pass@ep-xxx.pooler.us-east-1.aws.neon.tech/inventory?sslmode=require
 DB_USER=...
 DB_PASSWORD=...
 JWT_SECRET=<long random secret, at least 32 bytes>
@@ -87,10 +141,23 @@ docker build -t inventory-api .
 docker run -p 8080:8080 --env-file .env inventory-api
 ```
 
-## Tests
+## 🧪 Running tests
 
 ```bash
 ./mvnw verify
 ```
 
-Coverage: auth (register, duplicate username/email, validation, login, bad credentials, malformed JSON), products (CRUD, RBAC, 400/401/403/404, pagination with/without search), users (RBAC), error envelope (all handlers incl. 500), entity timestamps. JaCoCo enforces **≥90% line and ≥70% branch coverage** as part of the build.
+Coverage enforced by JaCoCo: **≥90% lines, ≥70% branches**. Current: **98% lines / 78% branches**.
+
+## 📚 Related
+
+- [Playwright test automation demo](https://github.com/YamiDarknezz/playwright-test-automation-demo) — 18 API + UI E2E tests covering this API, CI green, live HTML report
+- [GitHub profile](https://github.com/YamiDarknezz)
+
+---
+
+<div align="center">
+
+**Built with Java 21 · Spring Boot 3.5 · PostgreSQL · Docker · GitHub Actions · SonarCloud**
+
+</div>
