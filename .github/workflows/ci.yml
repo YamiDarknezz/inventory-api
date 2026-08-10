@@ -61,8 +61,11 @@ jobs:
           host: <VPS_IP>
           username: <USER>
           key: ${{ secrets.DEPLOY_KEY }}
+          envs: INVENTORY_SHA
           script: |
             cd /home/<USER>/docker
             git pull --ff-only
-            ./scripts/deploy.sh
+            INVENTORY_SHA=$INVENTORY_SHA ./scripts/deploy.sh
             docker compose ps
+        env:
+          INVENTORY_SHA: ${{ github.sha }}
