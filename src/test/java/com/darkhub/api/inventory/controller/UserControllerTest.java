@@ -59,6 +59,14 @@ class UserControllerTest {
     }
 
     @Test
+    void getMissingUser_returns404() throws Exception {
+        mockMvc.perform(get("/api/users/999999")
+                        .header("Authorization", "Bearer " + loginAsAdmin()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404));
+    }
+
+    @Test
     void listUsersWithoutToken_returns401() throws Exception {
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isUnauthorized());

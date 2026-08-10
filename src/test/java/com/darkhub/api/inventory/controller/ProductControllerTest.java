@@ -116,6 +116,47 @@ class ProductControllerTest {
     }
 
     @Test
+    void pagination_withoutSearch_returnsAllProducts() throws Exception {
+        mockMvc.perform(get("/api/products/paged?page=0&size=2")
+                        .header("Authorization", "Bearer " + loginAsUser()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.totalElements").value(greaterThanOrEqualTo(5)));
+    }
+
+    @Test
+    void pagination_withBlankSearch_returnsAllProducts() throws Exception {
+        mockMvc.perform(get("/api/products/paged?page=0&size=2&search=")
+                        .header("Authorization", "Bearer " + loginAsUser()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.totalElements").value(greaterThanOrEqualTo(5)));
+    }
+
+    @Test
+    void requestWithNonBearerHeader_returns401() throws Exception {
+        mockMvc.perform(get("/api/products")
+                        .header("Authorization", "Token abcdef"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void createWithMalformedJson_returns400() throws Exception {
+        mockMvc.perform(post("/api/products")
+                        .header("Authorization", "Bearer " + loginAsAdmin())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{{{"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void requestWithInvalidToken_returns401() throws Exception {
+        mockMvc.perform(get("/api/products")
+                        .header("Authorization", "Bearer invalid.token.here"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void adminCanUpdateAndDeleteProduct() throws Exception {
         String token = loginAsAdmin();
 
