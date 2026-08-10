@@ -1,5 +1,7 @@
 package com.darkhub.api.inventory.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,26 +23,26 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private String loginAsAdmin() throws Exception {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private String login(String username, String password) throws Exception {
         String body = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"username":"admin","password":"admin123"}
-                                """))
+                                {"username":"%s","password":"%s"}
+                                """.formatted(username, password)))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
-        return body.replaceAll(".*\"token\":\"([^\"]+)\".*", "$1");
+        JsonNode json = OBJECT_MAPPER.readTree(body);
+        return json.get("token").asText();
+    }
+
+    private String loginAsAdmin() throws Exception {
+        return login("admin", "admin123");
     }
 
     private String loginAsUser() throws Exception {
-        String body = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {"username":"demo","password":"demo1234"}
-                                """))
-                .andExpect(status().isOk())
-                .andReturn().getResponse().getContentAsString();
-        return body.replaceAll(".*\"token\":\"([^\"]+)\".*", "$1");
+        return login("demo", "demo1234");
     }
 
     @Test

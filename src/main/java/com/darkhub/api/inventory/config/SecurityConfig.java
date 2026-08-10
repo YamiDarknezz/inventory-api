@@ -21,6 +21,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    private static final String PRODUCTS_PATH = "/api/products/**";
+    private static final String ADMIN = "ADMIN";
+
     private final JwtAuthFilter jwtAuthFilter;
 
     public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
@@ -50,11 +53,11 @@ public class SecurityConfig {
                     .requestMatchers("/api/auth/**", "/actuator/health", "/actuator/info").permitAll()
                     .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/h2-console/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("USER", "ADMIN")
-                    .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
-                    .requestMatchers("/api/users/**").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.GET, PRODUCTS_PATH).hasAnyRole("USER", ADMIN)
+                    .requestMatchers(HttpMethod.POST, PRODUCTS_PATH).hasRole(ADMIN)
+                    .requestMatchers(HttpMethod.PUT, PRODUCTS_PATH).hasRole(ADMIN)
+                    .requestMatchers(HttpMethod.DELETE, PRODUCTS_PATH).hasRole(ADMIN)
+                    .requestMatchers("/api/users/**").hasRole(ADMIN)
                     .anyRequest().authenticated())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
