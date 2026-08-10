@@ -51,13 +51,18 @@ jobs:
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
-      - name: Download jar artifact
-        uses: actions/download-artifact@v4
+      - name: Checkout infra repo
+        uses: actions/checkout@v4
         with:
-          name: inventory-api-jar
-          path: dist
-      - name: Deploy to Oracle Cloud VM (pending infrastructure)
-        run: |
-          echo "Jar ready: $(ls -la dist/)"
-          echo "Deploy step will SSH to the Oracle Cloud VM and start the container"
-          echo "with Neon DB_URL + JWT_SECRET once the VM is provisioned."
+          repository: YamiDarknezz/darknezz-infra
+      - name: Deploy to Oracle Cloud VM
+        uses: appleboy/ssh-action@v1
+        with:
+          host: <VPS_IP>
+          username: <USER>
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /home/<USER>/docker
+            git pull --ff-only
+            ./scripts/deploy.sh
+            docker compose ps
