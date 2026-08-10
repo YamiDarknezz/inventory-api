@@ -6,7 +6,8 @@ on:
   pull_request:
 
 jobs:
-  test:
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,10 +16,48 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: maven
-      - run: ./mvnw -B verify
+      - name: Compile and package
+        run: ./mvnw -B package -DskipTests
+      - name: Upload jar artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inventory-api-jar
+          path: target/inventory-api-0.1.0.jar
+          retention-days: 7
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+      - name: Run tests with coverage gate (>=90% lines, >=70% branches)
+        run: ./mvnw -B verify
       - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: target/site/jacoco/
+
+  deploy:
+    name: Deploy
+    if: github.ref == 'refs/heads/main' && !cancelled() && needs.test.result == 'success'
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download jar artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: inventory-api-jar
+          path: dist
+      - name: Deploy to Oracle Cloud VM (pending infrastructure)
+        run: |
+          echo "Jar ready: $(ls -la dist/)"
+          echo "Deploy step will SSH to the Oracle Cloud VM and start the container"
+          echo "with Neon DB_URL + JWT_SECRET once the VM is provisioned."
