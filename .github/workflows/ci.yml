@@ -63,7 +63,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           envs: INVENTORY_SHA
           script: |
-            cd $HOME/docker
+            cd $HOME/data/docker
             git pull --ff-only
             INVENTORY_SHA=$INVENTORY_SHA ./scripts/deploy.sh
             docker compose ps
