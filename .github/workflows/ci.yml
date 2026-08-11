@@ -58,12 +58,12 @@ jobs:
       - name: Deploy to Oracle Cloud VM
         uses: appleboy/ssh-action@v1
         with:
-          host: <VPS_IP>
-          username: <USER>
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           envs: INVENTORY_SHA
           script: |
-            cd /home/<USER>/docker
+            cd $HOME/docker
             git pull --ff-only
             INVENTORY_SHA=$INVENTORY_SHA ./scripts/deploy.sh
             docker compose ps
