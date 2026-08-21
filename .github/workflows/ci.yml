@@ -64,7 +64,7 @@ jobs:
           envs: INVENTORY_SHA
           script: |
             set -e
-            cd $HOME/data/docker
+            cd $HOME/data/repos/darknezz-infra
             git pull --ff-only origin main
             INVENTORY_SHA=$INVENTORY_SHA ./scripts/deploy.sh
             docker compose ps
