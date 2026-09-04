@@ -51,22 +51,17 @@ jobs:
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout infra repo
-        uses: actions/checkout@v4
-        with:
-          repository: YamiDarknezz/darknezz-infra
       - name: Deploy to Oracle Cloud VM
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
-          envs: INVENTORY_SHA
           script: |
             set -e
-            cd $HOME/data/repos/darknezz-infra
+            cd $HOME/data/repos/inventory-api
             git pull --ff-only origin main
-            INVENTORY_SHA=$INVENTORY_SHA ./scripts/deploy.sh
+            cd $HOME/data/deploy/inventory-api
+            docker compose up -d --build --force-recreate
             docker compose ps
-        env:
-          INVENTORY_SHA: ${{ github.sha }}
+            echo "✅ inventory-api deploy OK"
