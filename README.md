@@ -56,7 +56,7 @@ A production-ready REST API for product inventory management, built as a portfol
 
 Swagger UI: http://localhost:8080/swagger-ui.html
 
-**Live demo**: https://api-inventory.darknezz.dev/swagger-ui.html
+> **Nota de despliegue**: La demo en vivo en `api-inventory.darknezz.dev` fue dada de baja para optimizar recursos de memoria RAM en el servidor. Este repositorio se concibe como un proyecto showcase y suite de pruebas para ejecución en entorno de desarrollo local.
 
 Seeded credentials (dev profile):
 
@@ -122,7 +122,7 @@ src/main/java/com/darkhub/api/inventory/
 |---|---|
 | Build | `package`, uploads jar as artifact |
 | Test | `verify` + JaCoCo coverage gate (≥90% lines, ≥70% branches), coverage report artifact |
-| Deploy | SSH to Oracle Cloud VM: git pull + docker compose up -d --build (auto-deploy on every push to main) |
+| Deploy | *(Deshabilitado)* Previamente desplegaba en Oracle Cloud VM vía SSH; desactivado para economizar recursos. |
 
 **Quality (`code-quality.yml`)**: SonarCloud scan on every push/PR.
 

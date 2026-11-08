@@ -47,7 +47,7 @@ jobs:
 
   deploy:
     name: Deploy
-    if: github.ref == 'refs/heads/main' && !cancelled() && needs.test.result == 'success'
+    if: false  # Deshabilitado: api en vivo dada de baja para optimizar RAM
     needs: [build, test]
     runs-on: ubuntu-latest
     steps:
